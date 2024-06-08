@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Time Countdown</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #000000;
+            color: #ffffff;
+        }
+
+        .countdown-container {
+            text-align: center;
+            animation: fadeIn 1s ease-in-out;
+            background-color: #000000;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
+        }
+
+        h1 {
+            font-size: 2.5em;
+            margin-bottom: 20px;
+            color: #ffffff;
+        }
+
+        #countdown {
+            font-size: 2em;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+
+        #startDateInput,
+        #updateButton {
+            display: none;
+        }
+
+        .dot-button {
+            background: none;
+            border: none;
+            color: #ffffff;
+            font-size: 1.5em;
+            cursor: pointer;
+            padding: 10px;
+            transition: all 0.3s ease;
+        }
+
+        .dot-button:hover {
+            color: #4CAF50;
+        }
+
+        button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            background-color: #4CAF50;
+            color: white;
+            font-size: 1em;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .countdown-container {
+                width: 90%;
+                margin: 0 auto;
+            }
+
+            h1 {
+                font-size: 2em;
+            }
+
+            #countdown {
+                font-size: 1.5em;
+            }
+
+            button,
+            #startDateInput {
+                font-size: 0.9em;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="countdown-container">
+        <h1>Time Passed!</h1>
+        <p id="countdown"></p>
+        <input type="date" id="startDateInput">
+        <button id="updateButton" onclick="updateCountdownFromInput()">Start Countdown</button>
+        <button class="dot-button" id="revealButton" onclick="revealInput()">&#8230;</button>
+    </div>
+    <script>
+        // Ensure this script runs before loading the main script
+        let defaultStartDate = localStorage.getItem('defaultStartDate');
+        if (defaultStartDate) {
+            defaultStartDate = new Date(defaultStartDate);
+        } else {
+            defaultStartDate = new Date('2005-04-30T00:00:00'); // Default start date
+        }
+
+        function revealInput() {
+            document.getElementById('startDateInput').style.display = 'inline-block';
+            document.getElementById('updateButton').style.display = 'inline-block';
+            document.getElementById('revealButton').style.display = 'none';
+        }
+    </script>
+    <script src="last.js"></script>
+</body>
+
+</html>
