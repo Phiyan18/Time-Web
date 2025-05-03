@@ -1,0 +1,141 @@
+<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="Default.aspx.cs" Inherits="EmployeeFormWebApp.Default" %>
+
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head runat="server">
+    <title>Employee Insert & Delete</title>
+</head>
+<body>
+    <form id="form1" runat="server">
+        <div>
+            <h2>Employee Form</h2>
+            <table>
+                <tr>
+                    <td>Emp ID:</td>
+                    <td><asp:TextBox ID="txtEmpID" runat="server" /></td>
+                </tr>
+                <tr>
+                    <td>Emp Name:</td>
+                    <td><asp:TextBox ID="txtEmpName" runat="server" /></td>
+                </tr>
+                <tr>
+                    <td>Emp City:</td>
+                    <td>
+                        <asp:DropDownList ID="ddlCity" runat="server">
+                            <asp:ListItem Text="--Select--" Value="" />
+                            <asp:ListItem Text="Lagos" />
+                            <asp:ListItem Text="Abuja" />
+                            <asp:ListItem Text="Kano" />
+                        </asp:DropDownList>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Gender:</td>
+                    <td>
+                        <asp:RadioButton ID="rdoMale" runat="server" GroupName="Gender" Text="Male" Checked="true" />
+                        <asp:RadioButton ID="rdoFemale" runat="server" GroupName="Gender" Text="Female" />
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2">
+                        <asp:Button ID="btnInsert" runat="server" Text="Insert" OnClick="btnInsert_Click" />
+                        <asp:Button ID="btnDelete" runat="server" Text="Delete Selected" OnClick="btnDelete_Click" />
+                    </td>
+                </tr>
+            </table>
+
+            <hr />
+            <asp:GridView ID="gvEmployees" runat="server" AutoGenerateColumns="False" DataKeyNames="ID" OnSelectedIndexChanged="gvEmployees_SelectedIndexChanged">
+                <Columns>
+                    <asp:BoundField DataField="ID" HeaderText="Emp ID" />
+                    <asp:BoundField DataField="Name" HeaderText="Emp Name" />
+                    <asp:BoundField DataField="City" HeaderText="City" />
+                    <asp:BoundField DataField="Gender" HeaderText="Gender" />
+                    <asp:CommandField ShowSelectButton="True" SelectText="Select" />
+                </Columns>
+            </asp:GridView>
+        </div>
+    </form>
+</body>
+</html>
+
+
+
+
+
+using System;
+using System.Collections.Generic;
+using System.Web.UI;
+
+namespace EmployeeFormWebApp
+{
+    public partial class Default : Page
+    {
+        private static List<Employee> employeeList = new List<Employee>();
+
+        protected void Page_Load(object sender, EventArgs e)
+        {
+            if (!IsPostBack)
+            {
+                BindGrid();
+            }
+        }
+
+        protected void btnInsert_Click(object sender, EventArgs e)
+        {
+            Employee emp = new Employee
+            {
+                ID = txtEmpID.Text.Trim(),
+                Name = txtEmpName.Text.Trim(),
+                City = ddlCity.SelectedValue,
+                Gender = rdoMale.Checked ? "Male" : "Female"
+            };
+
+            employeeList.Add(emp);
+            BindGrid();
+            ClearFields();
+        }
+
+        protected void btnDelete_Click(object sender, EventArgs e)
+        {
+            if (gvEmployees.SelectedIndex >= 0)
+            {
+                string id = gvEmployees.SelectedDataKey.Value.ToString();
+                var emp = employeeList.Find(e => e.ID == id);
+                if (emp != null)
+                {
+                    employeeList.Remove(emp);
+                    BindGrid();
+                }
+            }
+        }
+
+        private void BindGrid()
+        {
+            gvEmployees.DataSource = employeeList;
+            gvEmployees.DataBind();
+        }
+
+        private void ClearFields()
+        {
+            txtEmpID.Text = "";
+            txtEmpName.Text = "";
+            ddlCity.SelectedIndex = 0;
+            rdoMale.Checked = true;
+            rdoFemale.Checked = false;
+        }
+
+        protected void gvEmployees_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            // Row is selected for delete
+        }
+    }
+
+    public class Employee
+    {
+        public string ID { get; set; }
+        public string Name { get; set; }
+        public string City { get; set; }
+        public string Gender { get; set; }
+    }
+}
